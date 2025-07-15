@@ -40,7 +40,7 @@
         .container {
             max-width: 1000px;
             margin: 0 auto;
-            padding: 1rem 1.5rem;
+            padding: 0 1rem;
         }
 
         .controls {
@@ -54,6 +54,7 @@
             top: 0;
             background: #f5f5f5;
             z-index: 10;
+            padding: 0 1rem;
         }
 
         .btn {
@@ -103,11 +104,12 @@
             align-items: center;
             gap: 0.5rem;
             margin: 0 1rem 1rem;
+            padding: 0 1rem;
         }
 
         .horse-selector label {
             font-size: 0.9rem;
-            font-weight: 500;
+            font-weight: bold;
             color: #555;
         }
 
@@ -121,28 +123,18 @@
         }
 
         .tabs {
-            display: flex;
-            background: white;
-            border-radius: 6px 6px 0 0;
-            overflow: hidden;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            margin: 0 1rem;
+            margin: 0 1rem 0;
+            padding: 0 1rem;
         }
 
-        .tab {
-            flex: 1;
+        .tabs select {
+            width: 100%;
             padding: 0.5rem;
-            text-align: center;
-            cursor: pointer;
-            background: #f8f9fa;
-            border: none;
-            transition: all 0.2s ease;
+            border: 1px solid #ddd;
+            border-radius: 6px;
             font-size: 0.9rem;
-        }
-
-        .tab.active {
-            background: white;
-            border-bottom: 2px solid #8B4513;
+            background: #f8f9fa;
+            cursor: pointer;
         }
 
         .tab-content {
@@ -154,6 +146,7 @@
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
             margin: 0 1rem;
+            padding: 0 1rem;
         }
 
         .tab-pane {
@@ -162,18 +155,6 @@
 
         .tab-pane.active {
             display: block;
-        }
-
-        .overview-selector {
-            margin-bottom: 1rem;
-        }
-
-        .overview-selector select {
-            width: 100%;
-            padding: 0.4rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 0.9rem;
         }
 
         .form-group {
@@ -250,7 +231,7 @@
         .upcoming-reminders {
             background: #fff3cd;
             border: 1px solid #ffeaa7;
-            padding: 0.8rem;
+            padding: 0 1rem 0.8rem;
             border-radius: 6px;
             margin: 0 1rem 1rem;
         }
@@ -286,8 +267,8 @@
 
         .modal-content {
             background: white;
-            margin: 0;
-            padding: 0.5rem;
+            margin: 0 1rem;
+            padding: 0 1rem;
             border-radius: 8px;
             max-width: 390px;
             width: 100%;
@@ -328,7 +309,7 @@
 
         @media (max-width: 768px) {
             .container {
-                padding: 1rem;
+                padding: 0 1rem;
             }
 
             .form-row {
@@ -338,26 +319,23 @@
             .controls {
                 flex-wrap: nowrap;
                 justify-content: space-between;
-            }
-            
-            .tabs {
-                flex-direction: column;
+                padding: 0 1rem;
             }
 
-            .tab {
-                font-size: 0.8rem;
-                padding: 0.4rem;
+            .tabs {
+                padding: 0 1rem;
             }
 
             .tab-content {
                 max-height: 50vh;
+                padding: 0 1rem;
             }
 
             .modal-content {
                 width: 100vw;
                 height: 100vh;
                 margin: 0;
-                padding: 0.5rem;
+                padding: 0 1rem;
             }
         }
     </style>
@@ -390,22 +368,18 @@
 
         <div id="horseContent" style="display: none;">
             <div class="tabs">
-                <button class="tab active" onclick="switchTab('overview')">Overview</button>
-                <button class="tab" onclick="switchTab('vaccinations')">Vaccinations</button>
-                <button class="tab" onclick="switchTab('deworming')">Deworming</button>
-                <button class="tab" onclick="switchTab('farrier')">Farrier</button>
-                <button class="tab" onclick="switchTab('veterinary')">Veterinary</button>
+                <select id="tabSelect" onchange="switchTab(this.value)">
+                    <option value="overview">Overview</option>
+                    <option value="vaccinations">Vaccinations</option>
+                    <option value="deworming">Deworming</option>
+                    <option value="farrier">Farrier</option>
+                    <option value="veterinary">Veterinary</option>
+                </select>
             </div>
 
             <div class="tab-content">
                 <div id="overview" class="tab-pane active">
                     <h3>Health Overview</h3>
-                    <div class="overview-selector">
-                        <select id="overviewSelect" onchange="loadOverview()">
-                            <option value="horseDetails">Horse Details</option>
-                            <option value="recentActivity">Recent Activity</option>
-                        </select>
-                    </div>
                     <div id="overviewContent"></div>
                 </div>
 
@@ -775,6 +749,7 @@
             
             selectedHorse = horses[horseIndex];
             document.getElementById('horseContent').style.display = 'block';
+            document.getElementById('tabSelect').value = 'overview';
             loadHorseData();
         }
 
@@ -790,51 +765,45 @@
 
         function loadOverview() {
             const overviewContent = document.getElementById('overviewContent');
-            const overviewSelect = document.getElementById('overviewSelect');
             const records = selectedHorse.records || {};
-            const view = overviewSelect.value;
             
-            let html = '';
+            let html = `
+                <div class="record-item">
+                    <h4>${selectedHorse.name}</h4>
+                    <p><strong>Breed:</strong> ${selectedHorse.breed || 'Not specified'}</p>
+                    <p><strong>Age:</strong> ${selectedHorse.age || 'Not specified'}</p>
+                    <p><strong>Colour:</strong> ${selectedHorse.color || 'Not specified'}</p>
+                </div>
+            `;
             
-            if (view === 'horseDetails') {
-                html = `
-                    <div class="record-item">
-                        <h4>${selectedHorse.name}</h4>
-                        <p><strong>Breed:</strong> ${selectedHorse.breed || 'Not specified'}</p>
-                        <p><strong>Age:</strong> ${selectedHorse.age || 'Not specified'}</p>
-                        <p><strong>Colour:</strong> ${selectedHorse.color || 'Not specified'}</p>
-                    </div>
-                `;
-            } else if (view === 'recentActivity') {
-                const allRecords = [];
-                Object.keys(records).forEach(type => {
-                    if (records[type] && records[type].length > 0) {
-                        records[type].forEach(record => {
-                            allRecords.push({...record, type: type});
-                        });
-                    }
-                });
-                
-                allRecords.sort((a, b) => new Date(b.date) - new Date(a.date));
-                
-                if (allRecords.length > 0) {
-                    html += '<h4>Recent Activity</h4>';
-                    allRecords.slice(0, 5).forEach(record => {
-                        html += `
-                            <div class="record-item">
-                                <div class="record-header">
-                                    <span class="record-type">${capitalizeFirst(record.type)}</span>
-                                    <span class="record-date">${formatDate(record.date)}</span>
-                                </div>
-                                <div class="record-details">
-                                    ${getRecordSummary(record)}
-                                </div>
-                            </div>
-                        `;
+            const allRecords = [];
+            Object.keys(records).forEach(type => {
+                if (records[type] && records[type].length > 0) {
+                    records[type].forEach(record => {
+                        allRecords.push({...record, type: type});
                     });
-                } else {
-                    html += '<div class="empty-state">No records yet. Add health records to start!</div>';
                 }
+            });
+            
+            allRecords.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            if (allRecords.length > 0) {
+                html += '<h4>Recent Activity</h4>';
+                allRecords.slice(0, 5).forEach(record => {
+                    html += `
+                        <div class="record-item">
+                            <div class="record-header">
+                                <span class="record-type">${capitalizeFirst(record.type)}</span>
+                                <span class="record-date">${formatDate(record.date)}</span>
+                            </div>
+                            <div class="record-details">
+                                ${getRecordSummary(record)}
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                html += '<div class="empty-state">No records yet. Add health records to start!</div>';
             }
             
             overviewContent.innerHTML = html;
@@ -1165,13 +1134,18 @@
                 pane.classList.remove('active');
             });
             
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
+            const selectedPane = document.getElementById(tabName);
+            if (selectedPane) {
+                selectedPane.classList.add('active');
+            }
             
-            document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
+            // Update dropdown to reflect current tab
+            const tabSelect = document.getElementById('tabSelect');
+            if (tabSelect) {
+                tabSelect.value = tabName;
+            }
             
+            // Load overview data if switching to overview tab
             if (tabName === 'overview') {
                 loadOverview();
             }
