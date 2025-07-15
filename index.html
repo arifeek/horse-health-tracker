@@ -181,7 +181,7 @@
             padding: 1.25rem;
             text-align: center;
             cursor: pointer;
- willow            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
             border: none;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             font-size: 1rem;
@@ -227,7 +227,7 @@
         }
 
         .mobile-tab-selector label {
-            display: none; /* Hide label to save space */
+            display: none;
         }
 
         .mobile-tab-selector select {
@@ -293,6 +293,15 @@
             background: white;
             color: #212529;
             box-shadow: 0 4px 20px rgba(46, 134, 171, 0.1);
+            z-index: 10;
+        }
+
+        .form-group select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232E86AB'%3E%3Cpath d='M7 10l5 5 5-5H7z'/%3E%3C/svg%3E") no-repeat right 1rem center;
+            background-size: 1.2rem;
         }
 
         .form-group input:focus,
@@ -302,6 +311,7 @@
             border-color: #2E86AB;
             box-shadow: 0 0 0 4px rgba(46, 134, 171, 0.2);
             transform: scale(1.01);
+            z-index: 11;
         }
 
         .form-row {
@@ -528,7 +538,7 @@
             }
             
             .tabs {
-                display: none; /* Hide tabs on mobile, rely on dropdown */
+                display: none;
             }
             
             .mobile-tab-selector {
@@ -560,15 +570,21 @@
                 padding: 0.75rem 1.25rem;
                 font-size: 0.9rem;
             }
+
+            .form-group select {
+                padding: 1rem 2rem;
+                background-size: 1.5rem;
+                touch-action: manipulation;
+            }
         }
 
         @media (min-width: 769px) {
             .mobile-tab-selector {
-                display: none; /* Hide dropdown on larger screens */
+                display: none;
             }
 
             .tabs {
-                display: flex; /* Show tabs on larger screens */
+                display: flex;
             }
         }
     </style>
@@ -697,7 +713,7 @@
             <form id="addVaccinationForm">
                 <div class="form-group">
                     <label for="vaccineType">Vaccine Type:</label>
-                    <select id="vaccineType" required>
+                    <select id="vaccineType" required onfocus="stopPropagation(event)">
                         <option value="">Select vaccine type</option>
                         <option value="Tetanus">Tetanus</option>
                         <option value="EEE/WEE">Eastern/Western Encephalitis</option>
@@ -747,7 +763,7 @@
             <form id="addDewormingForm">
                 <div class="form-group">
                     <label for="dewormingProduct">Product Used:</label>
-                    <select id="dewormingProduct" required>
+                    <select id="dewormingProduct" required onfocus="stopPropagation(event)">
                         <option value="">Select product</option>
                         <option value="Ivermectin">Ivermectin</option>
                         <option value="Fenbendazole">Fenbendazole</option>
@@ -794,7 +810,7 @@
             <form id="addFarrierForm">
                 <div class="form-group">
                     <label for="farrierService">Service Type:</label>
-                    <select id="farrierService" required>
+                    <select id="farrierService" required onfocus="stopPropagation(event)">
                         <option value="">Select service</option>
                         <option value="Trim">Trim</option>
                         <option value="Shoes - Front">Shoes - Front</option>
@@ -846,7 +862,7 @@
             <form id="addVeterinaryForm">
                 <div class="form-group">
                     <label for="vetVisitType">Visit Type:</label>
-                    <select id="vetVisitType" required>
+                    <select id="vetVisitType" required onfocus="stopPropagation(event)">
                         <option value="">Select visit type</option>
                         <option value="Routine Check-up">Routine Check-up</option>
                         <option value="Dental">Dental</option>
@@ -925,6 +941,10 @@
             
             document.getElementById('importFile').addEventListener('change', handleImport);
         });
+
+        function stopPropagation(event) {
+            event.stopPropagation();
+        }
 
         function loadHorses() {
             const horseSelect = document.getElementById('horseSelect');
