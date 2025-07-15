@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>Horse Health Tracker</title>
     <style>
         * {
@@ -15,38 +15,43 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f5f5f5;
             color: #333;
-            line-height: 1.6;
+            line-height: 1.4;
+            min-height: 100vh;
         }
 
         .header {
             background: linear-gradient(135deg, #8B4513, #A0522D);
             color: white;
-            padding: 1rem 0;
+            padding: 0.5rem 0;
             text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1000px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 1rem;
         }
 
         .controls {
             display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
             flex-wrap: wrap;
             align-items: center;
+            position: sticky;
+            top: 0;
+            background: #f5f5f5;
+            z-index: 10;
         }
 
         .btn {
-            padding: 0.75rem 1.5rem;
+            padding: 0.5rem 1rem;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
             text-decoration: none;
             display: inline-block;
         }
@@ -58,7 +63,7 @@
 
         .btn-primary:hover {
             background: #A0522D;
-            transform: translateY(-2px);
+            transform: translateY(-1px);
         }
 
         .btn-secondary {
@@ -80,45 +85,49 @@
         }
 
         .horse-selector {
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
         }
 
         .horse-selector select {
-            padding: 0.5rem;
-            border: 2px solid #ddd;
-            border-radius: 5px;
-            font-size: 1rem;
+            padding: 0.4rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            width: 100%;
         }
 
         .tabs {
             display: flex;
             background: white;
-            border-radius: 10px 10px 0 0;
+            border-radius: 6px 6px 0 0;
             overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
         .tab {
             flex: 1;
-            padding: 1rem;
+            padding: 0.5rem;
             text-align: center;
             cursor: pointer;
             background: #f8f9fa;
             border: none;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
         }
 
         .tab.active {
             background: white;
-            border-bottom: 3px solid #8B4513;
+            border-bottom: 2px solid #8B4513;
         }
 
         .tab-content {
             background: white;
-            padding: 2rem;
-            border-radius: 0 0 10px 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            min-height: 500px;
+            padding: 1rem;
+            border-radius: 0 0 6px 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            max-height: 60vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .tab-pane {
@@ -130,25 +139,26 @@
         }
 
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 0.8rem;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
+            margin-bottom: 0.3rem;
+            font-weight: 500;
             color: #555;
+            font-size: 0.9rem;
         }
 
         .form-group input,
         .form-group select,
         .form-group textarea {
             width: 100%;
-            padding: 0.75rem;
-            border: 2px solid #ddd;
-            border-radius: 5px;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            transition: border-color 0.2s ease;
         }
 
         .form-group input:focus,
@@ -160,7 +170,7 @@
 
         .form-row {
             display: flex;
-            gap: 1rem;
+            gap: 0.5rem;
         }
 
         .form-row .form-group {
@@ -169,48 +179,51 @@
 
         .record-item {
             background: #f8f9fa;
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            border-left: 4px solid #8B4513;
+            padding: 0.8rem;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            border-left: 3px solid #8B4513;
         }
 
         .record-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.3rem;
         }
 
         .record-type {
             font-weight: bold;
             color: #8B4513;
+            font-size: 0.9rem;
         }
 
         .record-date {
             color: #666;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
         }
 
         .record-details {
             color: #555;
-            margin-top: 0.5rem;
+            margin-top: 0.3rem;
+            font-size: 0.8rem;
         }
 
         .upcoming-reminders {
             background: #fff3cd;
             border: 1px solid #ffeaa7;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 2rem;
+            padding: 0.8rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
         }
 
         .reminder-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0.5rem 0;
+            padding: 0.3rem 0;
             border-bottom: 1px solid #ffeaa7;
+            font-size: 0.8rem;
         }
 
         .reminder-item:last-child {
@@ -235,22 +248,25 @@
 
         .modal-content {
             background: white;
-            margin: 5% auto;
-            padding: 2rem;
-            border-radius: 10px;
-            max-width: 500px;
+            margin: 10% auto;
+            padding: 1rem;
+            border-radius: 8px;
+            max-width: 400px;
             width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
         }
 
         .close {
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             cursor: pointer;
             color: #666;
         }
@@ -261,14 +277,15 @@
 
         .empty-state {
             text-align: center;
-            padding: 3rem;
+            padding: 1.5rem;
             color: #666;
+            font-size: 0.9rem;
         }
 
         .empty-state img {
-            width: 100px;
+            width: 80px;
             opacity: 0.3;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
         }
 
         @media (max-width: 768px) {
@@ -284,13 +301,27 @@
             .tabs {
                 flex-direction: column;
             }
+
+            .tab {
+                font-size: 0.8rem;
+                padding: 0.4rem;
+            }
+
+            .tab-content {
+                max-height: 50vh;
+            }
+
+            .modal-content {
+                margin: 5% auto;
+                max-width: 90%;
+            }
         }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>🐴 Horse Health Tracker</h1>
-        <p>Keep track of your horses' health records and upcoming care</p>
+        <p>Track your horses' health records and care</p>
     </div>
 
     <div class="container">
@@ -329,33 +360,33 @@
                 </div>
 
                 <div id="vaccinations" class="tab-pane">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                         <h3>Vaccination Records</h3>
-                        <button class="btn btn-primary" onclick="openModal('addVaccinationModal')">+ Add Vaccination</button>
+                        <button class="btn btn-primary" onclick="openModal('addVaccinationModal')">+ Add</button>
                     </div>
                     <div id="vaccinationRecords"></div>
                 </div>
 
                 <div id="deworming" class="tab-pane">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                         <h3>Deworming Records</h3>
-                        <button class="btn btn-primary" onclick="openModal('addDewormingModal')">+ Add Deworming</button>
+                        <button class="btn btn-primary" onclick="openModal('addDewormingModal')">+ Add</button>
                     </div>
                     <div id="dewormingRecords"></div>
                 </div>
 
                 <div id="farrier" class="tab-pane">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                         <h3>Farrier Records</h3>
-                        <button class="btn btn-primary" onclick="openModal('addFarrierModal')">+ Add Farrier Visit</button>
+                        <button class="btn btn-primary" onclick="openModal('addFarrierModal')">+ Add</button>
                     </div>
                     <div id="farrierRecords"></div>
                 </div>
 
                 <div id="veterinary" class="tab-pane">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                         <h3>Veterinary Records</h3>
-                        <button class="btn btn-primary" onclick="openModal('addVeterinaryModal')">+ Add Vet Visit</button>
+                        <button class="btn btn-primary" onclick="openModal('addVeterinaryModal')">+ Add</button>
                     </div>
                     <div id="veterinaryRecords"></div>
                 </div>
@@ -398,7 +429,7 @@
     <div id="addVaccinationModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Add Vaccination Record</h2>
+                <h2>Add Vaccination</h2>
                 <span class="close" onclick="closeModal('addVaccinationModal')">×</span>
             </div>
             <form id="addVaccinationForm">
@@ -436,7 +467,7 @@
                 </div>
                 <div class="form-group">
                     <label for="vaccineNotes">Notes:</label>
-                    <textarea id="vaccineNotes" rows="3"></textarea>
+                    <textarea id="vaccineNotes" rows="2"></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary">Add Vaccination</button>
             </form>
@@ -447,7 +478,7 @@
     <div id="addDewormingModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Add Deworming Record</h2>
+                <h2>Add Deworming</h2>
                 <span class="close" onclick="closeModal('addDewormingModal')">×</span>
             </div>
             <form id="addDewormingForm">
@@ -478,12 +509,12 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="dewormingWeight">Horse Weight (lbs):</label>
-                    <input type="number" id="dewormingWeight" min="0">
+                    <label for="dewormingWeight">Horse Weight (kg):</label>
+                    <input type="number" id="dewormingWeight" min="0" step="0.1">
                 </div>
                 <div class="form-group">
                     <label for="dewormingNotes">Notes:</label>
-                    <textarea id="dewormingNotes" rows="3"></textarea>
+                    <textarea id="dewormingNotes" rows="2"></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary">Add Deworming</button>
             </form>
@@ -530,12 +561,12 @@
                     <input type="text" id="farrierName">
                 </div>
                 <div class="form-group">
-                    <label for="farrierCost">Cost:</label>
+                    <label for="farrierCost">Cost (€):</label>
                     <input type="number" id="farrierCost" min="0" step="0.01">
                 </div>
                 <div class="form-group">
                     <label for="farrierNotes">Notes:</label>
-                    <textarea id="farrierNotes" rows="3"></textarea>
+                    <textarea id="farrierNotes" rows="2"></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary">Add Farrier Visit</button>
             </form>
@@ -583,19 +614,19 @@
                 </div>
                 <div class="form-group">
                     <label for="vetDiagnosis">Diagnosis/Findings:</label>
-                    <textarea id="vetDiagnosis" rows="3"></textarea>
+                    <textarea id="vetDiagnosis" rows="2"></textarea>
                 </div>
                 <div class="form-group">
                     <label for="vetTreatment">Treatment:</label>
-                    <textarea id="vetTreatment" rows="3"></textarea>
+                    <textarea id="vetTreatment" rows="2"></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="vetCost">Cost:</label>
+                    <label for="vetCost">Cost (€):</label>
                     <input type="number" id="vetCost" min="0" step="0.01">
                 </div>
                 <div class="form-group">
                     <label for="vetNotes">Notes:</label>
-                    <textarea id="vetNotes" rows="3"></textarea>
+                    <textarea id="vetNotes" rows="2"></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary">Add Veterinary Visit</button>
             </form>
@@ -746,7 +777,7 @@
                     `;
                 });
             } else {
-                html += '<div class="empty-state">No records yet. Add some health records to get started!</div>';
+                html += '<div class="empty-state">No records yet. Add health records to start!</div>';
             }
             
             overviewContent.innerHTML = html;
@@ -757,7 +788,7 @@
             const records = selectedHorse.records?.[type] || [];
             
             if (records.length === 0) {
-                container.innerHTML = '<div class="empty-state">No records yet. Click the button above to add your first record.</div>';
+                container.innerHTML = '<div class="empty-state">No records yet. Click + Add to start.</div>';
                 return;
             }
             
@@ -771,7 +802,7 @@
                             <span class="record-type">${getRecordTitle(record, type)}</span>
                             <div>
                                 <span class="record-date">${formatDate(record.date)}</span>
-                                <button class="btn btn-danger" onclick="deleteRecord('${type}', ${index})" style="margin-left: 1rem; padding: 0.25rem 0.5rem; font-size: 0.8rem;">Delete</button>
+                                <button class="btn btn-danger" onclick="deleteRecord('${type}', ${index})" style="margin-left: 0.5rem; padding: 0.2rem 0.4rem; font-size: 0.7rem;">Delete</button>
                             </div>
                         </div>
                         <div class="record-details">
@@ -811,14 +842,14 @@
                     break;
                 case 'deworming':
                     details = '';
-                    if (record.weight) details += `<p><strong>Weight:</strong> ${record.weight} lbs</p>`;
+                    if (record.weight) details += `<p><strong>Weight:</strong> ${record.weight} kg</p>`;
                     if (record.nextDue) details += `<p><strong>Next Due:</strong> ${formatDate(record.nextDue)}</p>`;
                     if (record.notes) details += `<p><strong>Notes:</strong> ${record.notes}</p>`;
                     break;
                 case 'farrier':
                     details = '';
                     if (record.farrier) details += `<p><strong>Farrier:</strong> ${record.farrier}</p>`;
-                    if (record.cost) details += `<p><strong>Cost:</strong> $${parseFloat(record.cost).toFixed(2)}</p>`;
+                    if (record.cost) details += `<p><strong>Cost:</strong> €${parseFloat(record.cost).toFixed(2)}</p>`;
                     if (record.nextDue) details += `<p><strong>Next Due:</strong> ${formatDate(record.nextDue)}</p>`;
                     if (record.notes) details += `<p><strong>Notes:</strong> ${record.notes}</p>`;
                     break;
@@ -827,7 +858,7 @@
                     if (record.veterinarian) details += `<p><strong>Veterinarian:</strong> ${record.veterinarian}</p>`;
                     if (record.diagnosis) details += `<p><strong>Diagnosis:</strong> ${record.diagnosis}</p>`;
                     if (record.treatment) details += `<p><strong>Treatment:</strong> ${record.treatment}</p>`;
-                    if (record.cost) details += `<p><strong>Cost:</strong> $${parseFloat(record.cost).toFixed(2)}</p>`;
+                    if (record.cost) details += `<p><strong>Cost:</strong> €${parseFloat(record.cost).toFixed(2)}</p>`;
                     if (record.nextDue) details += `<p><strong>Next Check-up:</strong> ${formatDate(record.nextDue)}</p>`;
                     if (record.notes) details += `<p><strong>Notes:</strong> ${record.notes}</p>`;
                     break;
