@@ -159,8 +159,10 @@
             transform: scale(1.01);
         }
 
-        .tabs {
+        .tab-container {
             display: flex;
+            align-items: center;
+            gap: 1rem;
             background: white;
             border-radius: 20px 20px 0 0;
             overflow: hidden;
@@ -168,12 +170,18 @@
             border: 2px solid rgba(46, 134, 171, 0.1);
         }
 
+        .tabs {
+            display: flex;
+            flex: 1;
+            background: white;
+        }
+
         .tab {
             flex: 1;
             padding: 1.25rem;
             text-align: center;
             cursor: pointer;
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+ willow            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
             border: none;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             font-size: 1rem;
@@ -214,17 +222,29 @@
 
         .mobile-tab-selector {
             display: none;
-            margin-bottom: 1rem;
+            flex-shrink: 0;
+            padding: 0.5rem;
         }
 
         .mobile-tab-selector label {
-            display: block;
-            margin-bottom: 0.6rem;
-            font-weight: 700;
-            color: #2E86AB;
-            font-size: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            display: none; /* Hide label to save space */
+        }
+
+        .mobile-tab-selector select {
+            padding: 0.75rem;
+            border: 3px solid rgba(46, 134, 171, 0.2);
+            border-radius: 15px;
+            font-size: 0.95rem;
+            background: white;
+            color: #212529;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(46, 134, 171, 0.1);
+        }
+
+        .mobile-tab-selector select:focus {
+            outline: none;
+            border-color: #2E86AB;
+            box-shadow: 0 0 0 4px rgba(46, 134, 171, 0.2);
         }
 
         .tab-content {
@@ -375,7 +395,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0.25rem 0;
+            padding: 0.75rem 0;
             border-bottom: 1px solid rgba(241, 143, 1, 0.1);
             font-size: 1rem;
             font-weight: 500;
@@ -508,11 +528,21 @@
             }
             
             .tabs {
-                display: none;
+                display: none; /* Hide tabs on mobile, rely on dropdown */
             }
             
             .mobile-tab-selector {
                 display: block;
+            }
+
+            .tab-container {
+                flex-direction: row;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .mobile-tab-selector select {
+                width: 100%;
             }
 
             .tab-content {
@@ -529,6 +559,16 @@
             .btn {
                 padding: 0.75rem 1.25rem;
                 font-size: 0.9rem;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .mobile-tab-selector {
+                display: none; /* Hide dropdown on larger screens */
+            }
+
+            .tabs {
+                display: flex; /* Show tabs on larger screens */
             }
         }
     </style>
@@ -560,22 +600,24 @@
         </div>
 
         <div id="horseContent" style="display: none;">
-            <div class="tabs">
-                <button class="tab active" data-tab="overview" onclick="switchTab('overview')" aria-label="View health overview">Overview</button>
-                <button class="tab" data-tab="vaccinations" onclick="switchTab('vaccinations')" aria-label="View vaccination records">Vaccinations</button>
-                <button class="tab" data-tab="deworming" onclick="switchTab('deworming')" aria-label="View deworming records">Deworming</button>
-                <button class="tab" data-tab="farrier" onclick="switchTab('farrier')" aria-label="View farrier records">Farrier</button>
-                <button class="tab" data-tab="veterinary" onclick="switchTab('veterinary')" aria-label="View veterinary records">Veterinary</button>
-            </div>
-            <div class="mobile-tab-selector">
-                <label for="tabSelect">Select Tab:</label>
-                <select id="tabSelect" onchange="switchTab(this.value)" aria-label="Select health record tab">
-                    <option value="overview">Overview</option>
-                    <option value="vaccinations">Vaccinations</option>
-                    <option value="deworming">Deworming</option>
-                    <option value="farrier">Farrier</option>
-                    <option value="veterinary">Veterinary</option>
-                </select>
+            <div class="tab-container">
+                <div class="tabs">
+                    <button class="tab active" data-tab="overview" onclick="switchTab('overview')" aria-label="View health overview">Overview</button>
+                    <button class="tab" data-tab="vaccinations" onclick="switchTab('vaccinations')" aria-label="View vaccination records">Vaccinations</button>
+                    <button class="tab" data-tab="deworming" onclick="switchTab('deworming')" aria-label="View deworming records">Deworming</button>
+                    <button class="tab" data-tab="farrier" onclick="switchTab('farrier')" aria-label="View farrier records">Farrier</button>
+                    <button class="tab" data-tab="veterinary" onclick="switchTab('veterinary')" aria-label="View veterinary records">Veterinary</button>
+                </div>
+                <div class="mobile-tab-selector">
+                    <label for="tabSelect">Select Tab:</label>
+                    <select id="tabSelect" onchange="switchTab(this.value)" aria-label="Select health record tab">
+                        <option value="overview">Overview</option>
+                        <option value="vaccinations">Vaccinations</option>
+                        <option value="deworming">Deworming</option>
+                        <option value="farrier">Farrier</option>
+                        <option value="veterinary">Veterinary</option>
+                    </select>
+                </div>
             </div>
             <div class="tab-content">
                 <div id="overview" class="tab-pane active">
@@ -1318,6 +1360,7 @@
             
             remindersList.innerHTML = html;
         }
+
         function switchTab(tabName) {
             document.querySelectorAll('.tab-pane').forEach(pane => {
                 pane.classList.remove('active');
@@ -1342,7 +1385,6 @@
                 tabSelect.value = tabName;
             }
             
-            // Load data for all tabs to ensure records are displayed
             loadHorseData();
         }
 
