@@ -22,18 +22,18 @@
         .header {
             background: linear-gradient(135deg, #8B4513, #A0522D);
             color: white;
-            padding: 0.3rem 0;
+            padding: 0.4rem 0;
             text-align: center;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             margin: 0 1rem;
         }
 
         .header h1 {
-            font-size: 1em;
+            font-size: 1.2em;
         }
 
         .header p {
-            font-size: 0.7em;
+            font-size: 0.84em;
             margin-top: 0.2rem;
         }
 
@@ -99,7 +99,16 @@
         }
 
         .horse-selector {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
             margin: 0 1rem 1rem;
+        }
+
+        .horse-selector label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #555;
         }
 
         .horse-selector select {
@@ -107,7 +116,8 @@
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 0.9rem;
-            width: 100%;
+            width: auto;
+            flex-grow: 1;
         }
 
         .tabs {
@@ -152,6 +162,18 @@
 
         .tab-pane.active {
             display: block;
+        }
+
+        .overview-selector {
+            margin-bottom: 1rem;
+        }
+
+        .overview-selector select {
+            width: 100%;
+            padding: 0.4rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
         }
 
         .form-group {
@@ -264,12 +286,12 @@
 
         .modal-content {
             background: white;
-            margin: 10% 1rem;
-            padding: 1rem;
+            margin: 0;
+            padding: 0.5rem;
             border-radius: 8px;
-            max-width: 400px;
-            width: calc(100% - 2rem);
-            max-height: 80vh;
+            max-width: 390px;
+            width: 100%;
+            height: calc(100vh - 2rem);
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
         }
@@ -332,8 +354,10 @@
             }
 
             .modal-content {
-                margin: 5% 1rem;
-                width: calc(100% - 2rem);
+                width: 100vw;
+                height: 100vh;
+                margin: 0;
+                padding: 0.5rem;
             }
         }
     </style>
@@ -346,9 +370,9 @@
 
     <div class="container">
         <div class="controls">
-            <button class="btn btn-primary" onclick="openModal('addHorseModal')">+ Add Horse</button>
             <button class="btn btn-secondary" onclick="exportData()">Export Data</button>
             <button class="btn btn-secondary" onclick="importData()">Import Data</button>
+            <button class="btn btn-primary" onclick="openModal('addHorseModal')">+ Add Horse</button>
             <input type="file" id="importFile" style="display: none;" accept=".json">
         </div>
 
@@ -376,6 +400,12 @@
             <div class="tab-content">
                 <div id="overview" class="tab-pane active">
                     <h3>Health Overview</h3>
+                    <div class="overview-selector">
+                        <select id="overviewSelect" onchange="loadOverview()">
+                            <option value="horseDetails">Horse Details</option>
+                            <option value="recentActivity">Recent Activity</option>
+                        </select>
+                    </div>
                     <div id="overviewContent"></div>
                 </div>
 
@@ -760,45 +790,51 @@
 
         function loadOverview() {
             const overviewContent = document.getElementById('overviewContent');
+            const overviewSelect = document.getElementById('overviewSelect');
             const records = selectedHorse.records || {};
+            const view = overviewSelect.value;
             
-            let html = `
-                <div class="record-item">
-                    <h4>${selectedHorse.name}</h4>
-                    <p><strong>Breed:</strong> ${selectedHorse.breed || 'Not specified'}</p>
-                    <p><strong>Age:</strong> ${selectedHorse.age || 'Not specified'}</p>
-                    <p><strong>Colour:</strong> ${selectedHorse.color || 'Not specified'}</p>
-                </div>
-            `;
+            let html = '';
             
-            const allRecords = [];
-            Object.keys(records).forEach(type => {
-                if (records[type] && records[type].length > 0) {
-                    records[type].forEach(record => {
-                        allRecords.push({...record, type: type});
-                    });
-                }
-            });
-            
-            allRecords.sort((a, b) => new Date(b.date) - new Date(a.date));
-            
-            if (allRecords.length > 0) {
-                html += '<h4>Recent Activity</h4>';
-                allRecords.slice(0, 5).forEach(record => {
-                    html += `
-                        <div class="record-item">
-                            <div class="record-header">
-                                <span class="record-type">${capitalizeFirst(record.type)}</span>
-                                <span class="record-date">${formatDate(record.date)}</span>
-                            </div>
-                            <div class="record-details">
-                                ${getRecordSummary(record)}
-                            </div>
-                        </div>
-                    `;
+            if (view === 'horseDetails') {
+                html = `
+                    <div class="record-item">
+                        <h4>${selectedHorse.name}</h4>
+                        <p><strong>Breed:</strong> ${selectedHorse.breed || 'Not specified'}</p>
+                        <p><strong>Age:</strong> ${selectedHorse.age || 'Not specified'}</p>
+                        <p><strong>Colour:</strong> ${selectedHorse.color || 'Not specified'}</p>
+                    </div>
+                `;
+            } else if (view === 'recentActivity') {
+                const allRecords = [];
+                Object.keys(records).forEach(type => {
+                    if (records[type] && records[type].length > 0) {
+                        records[type].forEach(record => {
+                            allRecords.push({...record, type: type});
+                        });
+                    }
                 });
-            } else {
-                html += '<div class="empty-state">No records yet. Add health records to start!</div>';
+                
+                allRecords.sort((a, b) => new Date(b.date) - new Date(a.date));
+                
+                if (allRecords.length > 0) {
+                    html += '<h4>Recent Activity</h4>';
+                    allRecords.slice(0, 5).forEach(record => {
+                        html += `
+                            <div class="record-item">
+                                <div class="record-header">
+                                    <span class="record-type">${capitalizeFirst(record.type)}</span>
+                                    <span class="record-date">${formatDate(record.date)}</span>
+                                </div>
+                                <div class="record-details">
+                                    ${getRecordSummary(record)}
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    html += '<div class="empty-state">No records yet. Add health records to start!</div>';
+                }
             }
             
             overviewContent.innerHTML = html;
@@ -1031,7 +1067,12 @@
             const veterinaryVisit = {
                 visitType: visitType === 'Other' ? otherVisitType : visitType,
                 date: date,
-                nextDu
+                nextDue: nextDue,
+                veterinarian: veterinarian,
+                diagnosis: diagnosis,
+                treatment: treatment,
+                cost: cost,
+                notes: notes
             };
             
             if (!selectedHorse.records) selectedHorse.records = {};
@@ -1130,6 +1171,10 @@
             
             document.getElementById(tabName).classList.add('active');
             event.target.classList.add('active');
+            
+            if (tabName === 'overview') {
+                loadOverview();
+            }
         }
 
         function openModal(modalId) {
