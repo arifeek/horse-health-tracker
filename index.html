@@ -70,6 +70,40 @@
             overflow-x: auto;
         }
 
+        .horse-selector {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .horse-selector label {
+            display: block;
+            margin-bottom: 0.6rem;
+            font-weight: 700;
+            color: #2E86AB;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .horse-selector select {
+            padding: 1rem 1.25rem;
+            border: 3px solid rgba(46, 134, 171, 0.2);
+            border-radius: 15px;
+            font-size: 1rem;
+            width: 100%;
+            background: white;
+            color: #212529;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(46, 134, 171, 0.1);
+        }
+
+        .horse-selector select:focus {
+            outline: none;
+            border-color: #2E86AB;
+            box-shadow: 0 0 0 4px rgba(46, 134, 171, 0.2);
+            transform: scale(1.01);
+        }
+
         .footer-controls {
             position: fixed;
             bottom: 0;
@@ -150,29 +184,6 @@
         .btn-danger:hover {
             transform: translateY(-3px) scale(1.02);
             box-shadow: 0 12px 40px rgba(241, 143, 1, 0.6);
-        }
-
-        .horse-selector {
-            margin-bottom: 1.5rem;
-        }
-
-        .horse-selector select {
-            padding: 1rem 1.25rem;
-            border: 3px solid rgba(46, 134, 171, 0.2);
-            border-radius: 15px;
-            font-size: 1rem;
-            width: 100%;
-            background: white;
-            color: #212529;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 20px rgba(46, 134, 171, 0.1);
-        }
-
-        .horse-selector select:focus {
-            outline: none;
-            border-color: #2E86AB;
-            box-shadow: 0 0 0 4px rgba(46, 134, 171, 0.2);
-            transform: scale(1.01);
         }
 
         .tab-container {
@@ -506,7 +517,6 @@
             font-size: 1.1rem;
         }
 
-        /* Scrollbar Styling */
         ::-webkit-scrollbar {
             width: 12px;
         }
@@ -526,7 +536,6 @@
             background: linear-gradient(180deg, #1e5f7a, #7a2c56);
         }
 
-        /* Energetic animations */
         @keyframes bounce {
             0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
             40% { transform: translateY(-10px); }
@@ -551,6 +560,16 @@
                 flex-wrap: wrap;
                 align-items: stretch;
                 gap: 0.75rem;
+            }
+            
+            .horse-selector {
+                flex: 1 1 100%;
+                min-width: 0;
+            }
+            
+            .btn-primary {
+                flex: 1 1 auto;
+                width: 100%;
             }
             
             .footer-controls {
@@ -618,14 +637,13 @@
 
     <div class="container">
         <div class="controls">
+            <div class="horse-selector">
+                <label for="horseSelect">Select Horse:</label>
+                <select id="horseSelect" onchange="switchHorse()" aria-label="Select a horse">
+                    <option value="">-- Select a horse --</option>
+                </select>
+            </div>
             <button class="btn btn-primary" onclick="openModal('addHorseModal')" aria-label="Add new horse">+ Add Horse</button>
-        </div>
-
-        <div class="horse-selector">
-            <label for="horseSelect">Select Horse:</label>
-            <select id="horseSelect" onchange="switchHorse()" aria-label="Select a horse">
-                <option value="">-- Select a horse --</option>
-            </select>
         </div>
 
         <div id="upcomingReminders" class="upcoming-reminders" style="display: none;">
