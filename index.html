@@ -25,18 +25,19 @@
             padding: 0.5rem 0;
             text-align: center;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin: 0 1rem;
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 900px;
             margin: 0 auto;
-            padding: 1rem;
+            padding: 1rem 1.5rem;
         }
 
         .controls {
             display: flex;
             gap: 0.5rem;
-            margin-bottom: 1rem;
+            margin: 0 1rem 1rem;
             flex-wrap: wrap;
             align-items: center;
             position: sticky;
@@ -67,12 +68,15 @@
         }
 
         .btn-secondary {
-            background: #6c757d;
-            color: white;
+            background: #adb5bd;
+            color: #333;
+            border: 1px solid #6c757d;
+            font-size: 0.7rem;
+            padding: 0.4rem 0.8rem;
         }
 
         .btn-secondary:hover {
-            background: #5a6268;
+            background: #9ea6ae;
         }
 
         .btn-danger {
@@ -85,7 +89,7 @@
         }
 
         .horse-selector {
-            margin-bottom: 1rem;
+            margin: 0 1rem 1rem;
         }
 
         .horse-selector select {
@@ -102,6 +106,7 @@
             border-radius: 6px 6px 0 0;
             overflow: hidden;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin: 0 1rem;
         }
 
         .tab {
@@ -128,6 +133,7 @@
             max-height: 60vh;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
+            margin: 0 1rem;
         }
 
         .tab-pane {
@@ -214,7 +220,7 @@
             border: 1px solid #ffeaa7;
             padding: 0.8rem;
             border-radius: 6px;
-            margin-bottom: 1rem;
+            margin: 0 1rem 1rem;
         }
 
         .reminder-item {
@@ -248,11 +254,11 @@
 
         .modal-content {
             background: white;
-            margin: 10% auto;
+            margin: 10% 1rem;
             padding: 1rem;
             border-radius: 8px;
             max-width: 400px;
-            width: 90%;
+            width: calc(100% - 2rem);
             max-height: 80vh;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
@@ -289,6 +295,10 @@
         }
 
         @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
             .form-row {
                 flex-direction: column;
             }
@@ -312,8 +322,8 @@
             }
 
             .modal-content {
-                margin: 5% auto;
-                max-width: 90%;
+                margin: 5% 1rem;
+                width: calc(100% - 2rem);
             }
         }
     </style>
@@ -417,7 +427,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="horseColor">Color:</label>
+                    <label for="horseColor">Colour:</label>
                     <input type="text" id="horseColor">
                 </div>
                 <button type="submit" class="btn btn-primary">Add Horse</button>
@@ -444,6 +454,7 @@
                         <option value="Rhinopneumonitis">Rhinopneumonitis</option>
                         <option value="Rabies">Rabies</option>
                         <option value="Strangles">Strangles</option>
+                        <option value="Hendra">Hendra</option>
                         <option value="Other">Other</option>
                     </select>
                 </div>
@@ -746,7 +757,7 @@
                     <h4>${selectedHorse.name}</h4>
                     <p><strong>Breed:</strong> ${selectedHorse.breed || 'Not specified'}</p>
                     <p><strong>Age:</strong> ${selectedHorse.age || 'Not specified'}</p>
-                    <p><strong>Color:</strong> ${selectedHorse.color || 'Not specified'}</p>
+                    <p><strong>Colour:</strong> ${selectedHorse.color || 'Not specified'}</p>
                 </div>
             `;
             
@@ -849,7 +860,7 @@
                 case 'farrier':
                     details = '';
                     if (record.farrier) details += `<p><strong>Farrier:</strong> ${record.farrier}</p>`;
-                    if (record.cost) details += `<p><strong>Cost:</strong> €${parseFloat(record.cost).toFixed(2)}</p>`;
+                    if (record.cost) details += `<p><strong>Cost:</strong> $${parseFloat(record.cost).toFixed(2)}</p>`;
                     if (record.nextDue) details += `<p><strong>Next Due:</strong> ${formatDate(record.nextDue)}</p>`;
                     if (record.notes) details += `<p><strong>Notes:</strong> ${record.notes}</p>`;
                     break;
@@ -858,7 +869,7 @@
                     if (record.veterinarian) details += `<p><strong>Veterinarian:</strong> ${record.veterinarian}</p>`;
                     if (record.diagnosis) details += `<p><strong>Diagnosis:</strong> ${record.diagnosis}</p>`;
                     if (record.treatment) details += `<p><strong>Treatment:</strong> ${record.treatment}</p>`;
-                    if (record.cost) details += `<p><strong>Cost:</strong> €${parseFloat(record.cost).toFixed(2)}</p>`;
+                    if (record.cost) details += `<p><strong>Cost:</strong> $${parseFloat(record.cost).toFixed(2)}</p>`;
                     if (record.nextDue) details += `<p><strong>Next Check-up:</strong> ${formatDate(record.nextDue)}</p>`;
                     if (record.notes) details += `<p><strong>Notes:</strong> ${record.notes}</p>`;
                     break;
@@ -1206,10 +1217,10 @@
 
         function formatDate(dateString) {
             const date = new Date(dateString);
-            return date.toLocaleDateString('en-US', {
+            return date.toLocaleDateString('en-AU', {
                 year: 'numeric',
-                month: 'short',
-                day: 'numeric'
+                month: '2-digit',
+                day: '2-digit'
             });
         }
 
