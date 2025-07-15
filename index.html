@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horse Health Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #8B4513, #A0522D);
+            color: white;
+            padding: 1rem 0;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #8B4513;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #A0522D;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .horse-selector {
+            margin-bottom: 2rem;
+        }
+
+        .horse-selector select {
+            padding: 0.5rem;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .tabs {
+            display: flex;
+            background: white;
+            border-radius: 10px 10px 0 0;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            background: #f8f9fa;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            background: white;
+            border-bottom: 3px solid #8B4513;
+        }
+
+        .tab-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            min-height: 500px;
+        }
+
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #8B4513;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .record-item {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #8B4513;
+        }
+
+        .record-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .record-type {
+            font-weight: bold;
+            color: #8B4513;
+        }
+
+        .record-date {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .record-details {
+            color: #555;
+            margin-top: 0.5rem;
+        }
+
+        .upcoming-reminders {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .reminder-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #ffeaa7;
+        }
+
+        .reminder-item:last-child {
+            border-bottom: none;
+        }
+
+        .overdue {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .close {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .empty-state img {
+            width: 100px;
+            opacity: 0.3;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🐴 Horse Health Tracker</h1>
+        <p>Keep track of your horses' health records and upcoming care</p>
+    </div>
+
+    <div class="container">
+        <div class="controls">
+            <button class="btn btn-primary" onclick="openModal('addHorseModal')">+ Add Horse</button>
+            <button class="btn btn-secondary" onclick="exportData()">Export Data</button>
+            <button class="btn btn-secondary" onclick="importData()">Import Data</button>
+            <input type="file" id="importFile" style="display: none;" accept=".json">
+        </div>
+
+        <div class="horse-selector">
+            <label for="horseSelect">Select Horse:</label>
+            <select id="horseSelect" onchange="switchHorse()">
+                <option value="">-- Select a horse --</option>
+            </select>
+        </div>
+
+        <div id="upcomingReminders" class="upcoming-reminders" style="display: none;">
+            <h3>🔔 Upcoming & Overdue Care</h3>
+            <div id="remindersList"></div>
+        </div>
+
+        <div id="horseContent" style="display: none;">
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('overview')">Overview</button>
+                <button class="tab" onclick="switchTab('vaccinations')">Vaccinations</button>
+                <button class="tab" onclick="switchTab('deworming')">Deworming</button>
+                <button class="tab" onclick="switchTab('farrier')">Farrier</button>
+                <button class="tab" onclick="switchTab('veterinary')">Veterinary</button>
+            </div>
+
+            <div class="tab-content">
+                <div id="overview" class="tab-pane active">
+                    <h3>Health Overview</h3>
+                    <div id="overviewContent"></div>
+                </div>
+
+                <div id="vaccinations" class="tab-pane">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                        <h3>Vaccination Records</h3>
+                        <button class="btn btn-primary" onclick="openModal('addVaccinationModal')">+ Add Vaccination</button>
+                    </div>
+                    <div id="vaccinationRecords"></div>
+                </div>
+
+                <div id="deworming" class="tab-pane">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                        <h3>Deworming Records</h3>
+                        <button class="btn btn-primary" onclick="openModal('addDewormingModal')">+ Add Deworming</button>
+                    </div>
+                    <div id="dewormingRecords"></div>
+                </div>
+
+                <div id="farrier" class="tab-pane">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                        <h3>Farrier Records</h3>
+                        <button class="btn btn-primary" onclick="openModal('addFarrierModal')">+ Add Farrier Visit</button>
+                    </div>
+                    <div id="farrierRecords"></div>
+                </div>
+
+                <div id="veterinary" class="tab-pane">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                        <h3>Veterinary Records</h3>
+                        <button class="btn btn-primary" onclick="openModal('addVeterinaryModal')">+ Add Vet Visit</button>
+                    </div>
+                    <div id="veterinaryRecords"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Horse Modal -->
+    <div id="addHorseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Horse</h2>
+                <span class="close" onclick="closeModal('addHorseModal')">×</span>
+            </div>
+            <form id="addHorseForm">
+                <div class="form-group">
+                    <label for="horseName">Horse Name:</label>
+                    <input type="text" id="horseName" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="horseBreed">Breed:</label>
+                        <input type="text" id="horseBreed">
+                    </div>
+                    <div class="form-group">
+                        <label for="horseAge">Age:</label>
+                        <input type="number" id="horseAge" min="0">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="horseColor">Color:</label>
+                    <input type="text" id="horseColor">
+                </div>
+                <button type="submit" class="btn btn-primary">Add Horse</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Vaccination Modal -->
+    <div id="addVaccinationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Vaccination Record</h2>
+                <span class="close" onclick="closeModal('addVaccinationModal')">×</span>
+            </div>
+            <form id="addVaccinationForm">
+                <div class="form-group">
+                    <label for="vaccineType">Vaccine Type:</label>
+                    <select id="vaccineType" required>
+                        <option value="">Select vaccine type</option>
+                        <option value="Tetanus">Tetanus</option>
+                        <option value="EEE/WEE">Eastern/Western Encephalitis</option>
+                        <option value="West Nile">West Nile Virus</option>
+                        <option value="Influenza">Influenza</option>
+                        <option value="Rhinopneumonitis">Rhinopneumonitis</option>
+                        <option value="Rabies">Rabies</option>
+                        <option value="Strangles">Strangles</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div id="otherVaccineType" class="form-group" style="display: none;">
+                    <label for="otherVaccineInput">Other Vaccine Type:</label>
+                    <input type="text" id="otherVaccineInput">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="vaccineDate">Date Given:</label>
+                        <input type="date" id="vaccineDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="vaccineNextDue">Next Due Date:</label>
+                        <input type="date" id="vaccineNextDue">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="vaccineVet">Veterinarian:</label>
+                    <input type="text" id="vaccineVet">
+                </div>
+                <div class="form-group">
+                    <label for="vaccineNotes">Notes:</label>
+                    <textarea id="vaccineNotes" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Vaccination</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Deworming Modal -->
+    <div id="addDewormingModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Deworming Record</h2>
+                <span class="close" onclick="closeModal('addDewormingModal')">×</span>
+            </div>
+            <form id="addDewormingForm">
+                <div class="form-group">
+                    <label for="dewormingProduct">Product Used:</label>
+                    <select id="dewormingProduct" required>
+                        <option value="">Select product</option>
+                        <option value="Ivermectin">Ivermectin</option>
+                        <option value="Fenbendazole">Fenbendazole</option>
+                        <option value="Pyrantel">Pyrantel</option>
+                        <option value="Moxidectin">Moxidectin</option>
+                        <option value="Praziquantel">Praziquantel</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div id="otherDewormingProduct" class="form-group" style="display: none;">
+                    <label for="otherDewormingInput">Other Product:</label>
+                    <input type="text" id="otherDewormingInput">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="dewormingDate">Date Given:</label>
+                        <input type="date" id="dewormingDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="dewormingNextDue">Next Due Date:</label>
+                        <input type="date" id="dewormingNextDue">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="dewormingWeight">Horse Weight (lbs):</label>
+                    <input type="number" id="dewormingWeight" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="dewormingNotes">Notes:</label>
+                    <textarea id="dewormingNotes" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Deworming</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Farrier Modal -->
+    <div id="addFarrierModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Farrier Visit</h2>
+                <span class="close" onclick="closeModal('addFarrierModal')">×</span>
+            </div>
+            <form id="addFarrierForm">
+                <div class="form-group">
+                    <label for="farrierService">Service Type:</label>
+                    <select id="farrierService" required>
+                        <option value="">Select service</option>
+                        <option value="Trim">Trim</option>
+                        <option value="Shoes - Front">Shoes - Front</option>
+                        <option value="Shoes - Hind">Shoes - Hind</option>
+                        <option value="Shoes - All Four">Shoes - All Four</option>
+                        <option value="Reset">Reset</option>
+                        <option value="Corrective">Corrective</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div id="otherFarrierService" class="form-group" style="display: none;">
+                    <label for="otherFarrierInput">Other Service:</label>
+                    <input type="text" id="otherFarrierInput">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="farrierDate">Date:</label>
+                        <input type="date" id="farrierDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="farrierNextDue">Next Due Date:</label>
+                        <input type="date" id="farrierNextDue">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="farrierName">Farrier Name:</label>
+                    <input type="text" id="farrierName">
+                </div>
+                <div class="form-group">
+                    <label for="farrierCost">Cost:</label>
+                    <input type="number" id="farrierCost" min="0" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label for="farrierNotes">Notes:</label>
+                    <textarea id="farrierNotes" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Farrier Visit</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Veterinary Modal -->
+    <div id="addVeterinaryModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Veterinary Visit</h2>
+                <span class="close" onclick="closeModal('addVeterinaryModal')">×</span>
+            </div>
+            <form id="addVeterinaryForm">
+                <div class="form-group">
+                    <label for="vetVisitType">Visit Type:</label>
+                    <select id="vetVisitType" required>
+                        <option value="">Select visit type</option>
+                        <option value="Routine Check-up">Routine Check-up</option>
+                        <option value="Dental">Dental</option>
+                        <option value="Lameness">Lameness</option>
+                        <option value="Colic">Colic</option>
+                        <option value="Injury">Injury</option>
+                        <option value="Emergency">Emergency</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div id="otherVetVisitType" class="form-group" style="display: none;">
+                    <label for="otherVetInput">Other Visit Type:</label>
+                    <input type="text" id="otherVetInput">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="vetDate">Date:</label>
+                        <input type="date" id="vetDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="vetNextDue">Next Check-up Due:</label>
+                        <input type="date" id="vetNextDue">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="vetName">Veterinarian:</label>
+                    <input type="text" id="vetName">
+                </div>
+                <div class="form-group">
+                    <label for="vetDiagnosis">Diagnosis/Findings:</label>
+                    <textarea id="vetDiagnosis" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="vetTreatment">Treatment:</label>
+                    <textarea id="vetTreatment" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="vetCost">Cost:</label>
+                    <input type="number" id="vetCost" min="0" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label for="vetNotes">Notes:</label>
+                    <textarea id="vetNotes" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Veterinary Visit</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Data storage
+        let horses = JSON.parse(localStorage.getItem('horses')) || [];
+        let selectedHorse = null;
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing app...');
+            loadHorses();
+            updateReminders();
+            
+            // Set up form handlers
+            const addHorseForm = document.getElementById('addHorseForm');
+            if (addHorseForm) {
+                addHorseForm.addEventListener('submit', addHorse);
+                console.log('Add Horse form listener attached');
+            } else {
+                console.error('addHorseForm not found');
+            }
+            
+            document.getElementById('addVaccinationForm').addEventListener('submit', addVaccination);
+            document.getElementById('addDewormingForm').addEventListener('submit', addDeworming);
+            document.getElementById('addFarrierForm').addEventListener('submit', addFarrier);
+            document.getElementById('addVeterinaryForm').addEventListener('submit', addVeterinary);
+            
+            // Set up "Other" option handlers
+            document.getElementById('vaccineType').addEventListener('change', toggleOtherInput);
+            document.getElementById('dewormingProduct').addEventListener('change', toggleOtherInput);
+            document.getElementById('farrierService').addEventListener('change', toggleOtherInput);
+            document.getElementById('vetVisitType').addEventListener('change', toggleOtherInput);
+            
+            // Set up import file handler
+            document.getElementById('importFile').addEventListener('change', handleImport);
+        });
+
+        function loadHorses() {
+            console.log('Loading horses:', horses);
+            const horseSelect = document.getElementById('horseSelect');
+            horseSelect.innerHTML = '<option value="">-- Select a horse --</option>';
+            
+            horses.forEach((horse, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = horse.name;
+                horseSelect.appendChild(option);
+            });
+        }
+
+        function addHorse(e) {
+            e.preventDefault();
+            console.log('addHorse function called');
+            
+            const name = document.getElementById('horseName').value;
+            if (!name) {
+                alert('Horse name is required');
+                return;
+            }
+            
+            const breed = document.getElementById('horseBreed').value;
+            const age = document.getElementById('horseAge').value;
+            const color = document.getElementById('horseColor').value;
+            
+            const horse = {
+                name: name,
+                breed: breed || 'Not specified',
+                age: age || 'Not specified',
+                color: color || 'Not specified',
+                records: {}
+            };
+            
+            horses.push(horse);
+            console.log('New horse added:', horse);
+            saveData();
+            loadHorses();
+            closeModal('addHorseModal');
+            document.getElementById('addHorseForm').reset();
+            alert('Horse added successfully!');
+        }
+
+        function switchHorse() {
+            const horseSelect = document.getElementById('horseSelect');
+            const horseIndex = horseSelect.value;
+            
+            if (horseIndex === '') {
+                selectedHorse = null;
+                document.getElementById('horseContent').style.display = 'none';
+                return;
+            }
+            
+            selectedHorse = horses[horseIndex];
+            document.getElementById('horseContent').style.display = 'block';
+            loadHorseData();
+        }
+
+        function loadHorseData() {
+            if (!selectedHorse) return;
+            
+            loadOverview();
+            loadRecords('vaccinations', 'vaccinationRecords');
+            loadRecords('deworming', 'dewormingRecords');
+            loadRecords('farrier', 'farrierRecords');
+            loadRecords('veterinary', 'veterinaryRecords');
+        }
+
+        function loadOverview() {
+            const overviewContent = document.getElementById('overviewContent');
+            const records = selectedHorse.records || {};
+            
+            let html = `
+                <div class="record-item">
+                    <h4>${selectedHorse.name}</h4>
+                    <p><strong>Breed:</strong> ${selectedHorse.breed || 'Not specified'}</p>
+                    <p><strong>Age:</strong> ${selectedHorse.age || 'Not specified'}</p>
+                    <p><strong>Color:</strong> ${selectedHorse.color || 'Not specified'}</p>
+                </div>
+            `;
+            
+            const allRecords = [];
+            Object.keys(records).forEach(type => {
+                if (records[type] && records[type].length > 0) {
+                    records[type].forEach(record => {
+                        allRecords.push({...record, type: type});
+                    });
+                }
+            });
+            
+            allRecords.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            if (allRecords.length > 0) {
+                html += '<h4>Recent Activity</h4>';
+                allRecords.slice(0, 5).forEach(record => {
+                    html += `
+                        <div class="record-item">
+                            <div class="record-header">
+                                <span class="record-type">${capitalizeFirst(record.type)}</span>
+                                <span class="record-date">${formatDate(record.date)}</span>
+                            </div>
+                            <div class="record-details">
+                                ${getRecordSummary(record)}
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                html += '<div class="empty-state">No records yet. Add some health records to get started!</div>';
+            }
+            
+            overviewContent.innerHTML = html;
+        }
+
+        function loadRecords(type, containerId) {
+            const container = document.getElementById(containerId);
+            const records = selectedHorse.records?.[type] || [];
+            
+            if (records.length === 0) {
+                container.innerHTML = '<div class="empty-state">No records yet. Click the button above to add your first record.</div>';
+                return;
+            }
+            
+            const sortedRecords = records.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            let html = '';
+            sortedRecords.forEach((record, index) => {
+                html += `
+                    <div class="record-item">
+                        <div class="record-header">
+                            <span class="record-type">${getRecordTitle(record, type)}</span>
+                            <div>
+                                <span class="record-date">${formatDate(record.date)}</span>
+                                <button class="btn btn-danger" onclick="deleteRecord('${type}', ${index})" style="margin-left: 1rem; padding: 0.25rem 0.5rem; font-size: 0.8rem;">Delete</button>
+                            </div>
+                        </div>
+                        <div class="record-details">
+                            ${getRecordDetails(record, type)}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function getRecordTitle(record, type) {
+            switch(type) {
+                case 'vaccinations':
+                    return record.type || 'Vaccination';
+                case 'deworming':
+                    return record.product || 'Deworming';
+                case 'farrier':
+                    return record.service || 'Farrier Visit';
+                case 'veterinary':
+                    return record.visitType || 'Veterinary Visit';
+                default:
+                    return 'Record';
+            }
+        }
+
+        function getRecordDetails(record, type) {
+            let details = '';
+            
+            switch(type) {
+                case 'vaccinations':
+                    details = '';
+                    if (record.veterinarian) details += `<p><strong>Veterinarian:</strong> ${record.veterinarian}</p>`;
+                    if (record.nextDue) details += `<p><strong>Next Due:</strong> ${formatDate(record.nextDue)}</p>`;
+                    if (record.notes) details += `<p><strong>Notes:</strong> ${record.notes}</p>`;
+                    break;
+                case 'deworming':
+                    details = '';
+                    if (record.weight) details += `<p><strong>Weight:</strong> ${record.weight} lbs</p>`;
+                    if (record.nextDue) details += `<p><strong>Next Due:</strong> ${formatDate(record.nextDue)}</p>`;
+                    if (record.notes) details += `<p><strong>Notes:</strong> ${record.notes}</p>`;
+                    break;
+                case 'farrier':
+                    details = '';
+                    if (record.farrier) details += `<p><strong>Farrier:</strong> ${record.farrier}</p>`;
+                    if (record.cost) details += `<p><strong>Cost:</strong> $${parseFloat(record.cost).toFixed(2)}</p>`;
+                    if (record.nextDue) details += `<p><strong>Next Due:</strong> ${formatDate(record.nextDue)}</p>`;
+                    if (record.notes) details += `<p><strong>Notes:</strong> ${record.notes}</p>`;
+                    break;
+                case 'veterinary':
+                    details = '';
+                    if (record.veterinarian) details += `<p><strong>Veterinarian:</strong> ${record.veterinarian}</p>`;
+                    if (record.diagnosis) details += `<p><strong>Diagnosis:</strong> ${record.diagnosis}</p>`;
+                    if (record.treatment) details += `<p><strong>Treatment:</strong> ${record.treatment}</p>`;
+                    if (record.cost) details += `<p><strong>Cost:</strong> $${parseFloat(record.cost).toFixed(2)}</p>`;
+                    if (record.nextDue) details += `<p><strong>Next Check-up:</strong> ${formatDate(record.nextDue)}</p>`;
+                    if (record.notes) details += `<p><strong>Notes:</strong> ${record.notes}</p>`;
+                    break;
+            }
+            
+            return details;
+        }
+
+        function getRecordSummary(record) {
+            switch(record.type) {
+                case 'vaccinations':
+                    return `${record.type} vaccination`;
+                case 'deworming':
+                    return `${record.product} deworming`;
+                case 'farrier':
+                    return `${record.service} - ${record.farrier || 'Farrier visit'}`;
+                case 'veterinary':
+                    return `${record.visitType} - ${record.veterinarian || 'Vet visit'}`;
+                default:
+                    return 'Health record';
+            }
+        }
+
+        function addVaccination(e) {
+            e.preventDefault();
+            
+            if (!selectedHorse) {
+                alert('Please select a horse first');
+                return;
+            }
+            
+            const vaccineType = document.getElementById('vaccineType').value;
+            const otherType = document.getElementById('otherVaccineInput').value;
+            const date = document.getElementById('vaccineDate').value;
+            const nextDue = document.getElementById('vaccineNextDue').value;
+            const veterinarian = document.getElementById('vaccineVet').value;
+            const notes = document.getElementById('vaccineNotes').value;
+            
+            const vaccination = {
+                type: vaccineType === 'Other' ? otherType : vaccineType,
+                date: date,
+                nextDue: nextDue,
+                veterinarian: veterinarian,
+                notes: notes
+            };
+            
+            if (!selectedHorse.records) selectedHorse.records = {};
+            if (!selectedHorse.records.vaccinations) selectedHorse.records.vaccinations = [];
+            
+            selectedHorse.records.vaccinations.push(vaccination);
+            saveData();
+            loadHorseData();
+            updateReminders();
+            closeModal('addVaccinationModal');
+            document.getElementById('addVaccinationForm').reset();
+            alert('Vaccination added successfully!');
+        }
+
+        function addDeworming(e) {
+            e.preventDefault();
+            
+            if (!selectedHorse) {
+                alert('Please select a horse first');
+                return;
+            }
+            
+            const product = document.getElementById('dewormingProduct').value;
+            const otherProduct = document.getElementById('otherDewormingInput').value;
+            const date = document.getElementById('dewormingDate').value;
+            const nextDue = document.getElementById('dewormingNextDue').value;
+            const weight = document.getElementById('dewormingWeight').value;
+            const notes = document.getElementById('dewormingNotes').value;
+            
+            const deworming = {
+                product: product === 'Other' ? otherProduct : product,
+                date: date,
+                nextDue: nextDue,
+                weight: weight,
+                notes: notes
+            };
+            
+            if (!selectedHorse.records) selectedHorse.records = {};
+            if (!selectedHorse.records.deworming) selectedHorse.records.deworming = [];
+            
+            selectedHorse.records.deworming.push(deworming);
+            saveData();
+            loadHorseData();
+            updateReminders();
+            closeModal('addDewormingModal');
+            document.getElementById('addDewormingForm').reset();
+            alert('Deworming record added successfully!');
+        }
+
+        function addFarrier(e) {
+            e.preventDefault();
+            
+            if (!selectedHorse) {
+                alert('Please select a horse first');
+                return;
+            }
+            
+            const service = document.getElementById('farrierService').value;
+            const otherService = document.getElementById('otherFarrierInput').value;
+            const date = document.getElementById('farrierDate').value;
+            const nextDue = document.getElementById('farrierNextDue').value;
+            const farrier = document.getElementById('farrierName').value;
+            const cost = document.getElementById('farrierCost').value;
+            const notes = document.getElementById('farrierNotes').value;
+            
+            const farrierVisit = {
+                service: service === 'Other' ? otherService : service,
+                date: date,
+                nextDue: nextDue,
+                farrier: farrier,
+                cost: cost,
+                notes: notes
+            };
+            
+            if (!selectedHorse.records) selectedHorse.records = {};
+            if (!selectedHorse.records.farrier) selectedHorse.records.farrier = [];
+            
+            selectedHorse.records.farrier.push(farrierVisit);
+            saveData();
+            loadHorseData();
+            updateReminders();
+            closeModal('addFarrierModal');
+            document.getElementById('addFarrierForm').reset();
+            alert('Farrier visit added successfully!');
+        }
+
+        function addVeterinary(e) {
+            e.preventDefault();
+            
+            if (!selectedHorse) {
+                alert('Please select a horse first');
+                return;
+            }
+            
+            const visitType = document.getElementById('vetVisitType').value;
+            const otherVisitType = document.getElementById('otherVetInput').value;
+            const date = document.getElementById('vetDate').value;
+            const nextDue = document.getElementById('vetNextDue').value;
+            const veterinarian = document.getElementById('vetName').value;
+            const diagnosis = document.getElementById('vetDiagnosis').value;
+            const treatment = document.getElementById('vetTreatment').value;
+            const cost = document.getElementById('vetCost').value;
+            const notes = document.getElementById('vetNotes').value;
+            
+            const veterinaryVisit = {
+                visitType: visitType === 'Other' ? otherVisitType : visitType,
+                date: date,
+                nextDue: nextDue,
+                veterinarian: veterinarian,
+                diagnosis: diagnosis,
+                treatment: treatment,
+                cost: cost,
+                notes: notes
+            };
+            
+            if (!selectedHorse.records) selectedHorse.records = {};
+            if (!selectedHorse.records.veterinary) selectedHorse.records.veterinary = [];
+            
+            selectedHorse.records.veterinary.push(veterinaryVisit);
+            saveData();
+            loadHorseData();
+            updateReminders();
+            closeModal('addVeterinaryModal');
+            document.getElementById('addVeterinaryForm').reset();
+            alert('Veterinary visit added successfully!');
+        }
+
+        function deleteRecord(type, index) {
+            if (confirm('Are you sure you want to delete this record?')) {
+                selectedHorse.records[type].splice(index, 1);
+                saveData();
+                loadHorseData();
+                updateReminders();
+                alert('Record deleted successfully!');
+            }
+        }
+
+        function updateReminders() {
+            const remindersList = document.getElementById('remindersList');
+            const remindersContainer = document.getElementById('upcomingReminders');
+            const today = new Date();
+            const upcomingDays = 30;
+            
+            let allReminders = [];
+            
+            horses.forEach(horse => {
+                if (!horse.records) return;
+                
+                Object.keys(horse.records).forEach(type => {
+                    horse.records[type].forEach(record => {
+                        if (record.nextDue) {
+                            const dueDate = new Date(record.nextDue);
+                            const daysDiff = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
+                            
+                            if (daysDiff <= upcomingDays) {
+                                allReminders.push({
+                                    horse: horse.name,
+                                    type: type,
+                                    title: getRecordTitle(record, type),
+                                    dueDate: dueDate,
+                                    daysDiff: daysDiff,
+                                    overdue: daysDiff < 0
+                                });
+                            }
+                        }
+                    });
+                });
+            });
+            
+            allReminders.sort((a, b) => a.dueDate - b.dueDate);
+            
+            if (allReminders.length === 0) {
+                remindersContainer.style.display = 'none';
+                return;
+            }
+            
+            remindersContainer.style.display = 'block';
+            
+            let html = '';
+            allReminders.forEach(reminder => {
+                const className = reminder.overdue ? 'reminder-item overdue' : 'reminder-item';
+                const statusText = reminder.overdue ? 
+                    `Overdue by ${Math.abs(reminder.daysDiff)} days` : 
+                    reminder.daysDiff === 0 ? 'Due today' : `Due in ${reminder.daysDiff} days`;
+                
+                html += `
+                    <div class="${className}">
+                        <div>
+                            <strong>${reminder.horse}</strong> - ${reminder.title}
+                        </div>
+                        <div style="color: ${reminder.overdue ? '#721c24' : '#856404'};">
+                            ${statusText}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            remindersList.innerHTML = html;
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-pane').forEach(pane => {
+                pane.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'block';
+                console.log(`Modal ${modalId} opened`);
+            } else {
+                console.error(`Modal ${modalId} not found`);
+            }
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';
+                console.log(`Modal ${modalId} closed`);
+            } else {
+                console.error(`Modal ${modalId} not found`);
+            }
+        }
+
+        function toggleOtherInput(event) {
+            const select = event.target;
+            const otherInputId = select.id.replace(/Type|Product|Service/i, '') + 
+                (select.id.includes('vaccine') ? 'Type' : 
+                 select.id.includes('deworming') ? 'Product' : 
+                 select.id.includes('farrier') ? 'Service' : 'VisitType');
+            const otherDiv = document.getElementById('other' + otherInputId.charAt(0).toUpperCase() + otherInputId.slice(1));
+            
+            if (select.value === 'Other') {
+                otherDiv.style.display = 'block';
+            } else {
+                otherDiv.style.display = 'none';
+            }
+        }
+
+        function saveData() {
+            try {
+                localStorage.setItem('horses', JSON.stringify(horses));
+                console.log('Data saved to localStorage');
+            } catch (e) {
+                console.error('Error saving to localStorage:', e);
+            }
+        }
+
+        function exportData() {
+            const dataStr = JSON.stringify(horses, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'horse_health_data.json';
+            link.click();
+            URL.revokeObjectURL(url);
+            console.log('Data exported');
+        }
+
+        function importData() {
+            document.getElementById('importFile').click();
+            console.log('Import file dialog opened');
+        }
+
+        function handleImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedHorses = JSON.parse(e.target.result);
+                    if (Array.isArray(importedHorses)) {
+                        horses = importedHorses;
+                        saveData();
+                        loadHorses();
+                        updateReminders();
+                        alert('Data imported successfully!');
+                        console.log('Data imported:', horses);
+                    } else {
+                        alert('Invalid file format. Please select a valid JSON file.');
+                        console.error('Invalid JSON format');
+                    }
+                } catch (error) {
+                    alert('Error reading file. Please make sure it\'s a valid JSON file.');
+                    console.error('Error reading file:', error);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        function capitalizeFirst(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                    console.log(`Modal ${modal.id} closed via outside click`);
+                }
+            });
+        };
+    </script>
+</body>
+</html>
