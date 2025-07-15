@@ -736,8 +736,8 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="horseColor">Colour:</label>
-                    <input type="text" id="horseColor">
+                    <label for="horseColour">Colour:</label>
+                    <input type="text" id="horseColour">
                 </div>
                 <button type="submit" class="btn btn-primary" aria-label="Submit new horse">Add Horse</button>
             </form>
@@ -975,17 +975,28 @@
             document.getElementById('addFarrierForm').addEventListener('submit', addFarrier);
             document.getElementById('addVeterinaryForm').addEventListener('submit', addVeterinary);
             
-            document.getElementById('vaccineType').addEventListener('change', toggleOtherInput);
-            document.getElementById('dewormingProduct').addEventListener('change', toggleOtherInput);
-            document.getElementById('farrierService').addEventListener('change', toggleOtherInput);
-            document.getElementById('vetVisitType').addEventListener('change', toggleOtherInput);
+            // Prevent calendar from appearing on service type dropdowns
+            const serviceSelects = [
+                'vaccineType',
+                'dewormingProduct',
+                'farrierService',
+                'vetVisitType'
+            ];
+            serviceSelects.forEach(id => {
+                const select = document.getElementById(id);
+                if (select) {
+                    ['mousedown', 'touchstart'].forEach(eventType => {
+                        select.addEventListener(eventType, (e) => {
+                            e.preventDefault();
+                            select.focus();
+                        });
+                    });
+                    select.addEventListener('change', toggleOtherInput);
+                }
+            });
             
             document.getElementById('importFile').addEventListener('change', handleImport);
         });
-
-        function stopPropagation(event) {
-            event.stopPropagation();
-        }
 
         function loadHorses() {
             const horseSelect = document.getElementById('horseSelect');
@@ -1010,13 +1021,13 @@
             
             const breed = document.getElementById('horseBreed').value;
             const age = document.getElementById('horseAge').value;
-            const color = document.getElementById('horseColor').value;
+            const colour = document.getElementById('horseColour').value;
             
             const horse = {
                 name: name,
                 breed: breed || 'Not specified',
                 age: age || 'Not specified',
-                color: color || 'Not specified',
+                colour: colour || 'Not specified',
                 records: {}
             };
             
@@ -1063,7 +1074,7 @@
                     <h3>${selectedHorse.name}</h3>
                     <p><strong>Breed:</strong> ${selectedHorse.breed || 'Not specified'}</p>
                     <p><strong>Age:</strong> ${selectedHorse.age || 'Not specified'}</p>
-                    <p><strong>Colour:</strong> ${selectedHorse.color || 'Not specified'}</p>
+                    <p><strong>Colour:</strong> ${selectedHorse.colour || 'Not specified'}</p>
                 </div>
             `;
             
