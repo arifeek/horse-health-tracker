@@ -212,6 +212,21 @@
             transform: translateY(-2px);
         }
 
+        .mobile-tab-selector {
+            display: none;
+            margin-bottom: 1rem;
+        }
+
+        .mobile-tab-selector label {
+            display: block;
+            margin-bottom: 0.6rem;
+            font-weight: 700;
+            color: #2E86AB;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
         .tab-content {
             background: white;
             padding: 2rem;
@@ -445,13 +460,6 @@
             font-size: 1.1rem;
         }
 
-        .empty-state img {
-            width: 120px;
-            opacity: 0.5;
-            margin-bottom: 1.5rem;
-            filter: hue-rotate(200deg) saturate(1.2);
-        }
-
         /* Scrollbar Styling */
         ::-webkit-scrollbar {
             width: 12px;
@@ -470,27 +478,6 @@
 
         ::-webkit-scrollbar-thumb:hover {
             background: linear-gradient(180deg, #1e5f7a, #7a2c56);
-        }
-        }
-
-        /* Scrollbar Styling */
-        ::-webkit-scrollbar {
-            width: 12px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(30, 41, 59, 0.8);
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(180deg, #0d9488, #fb923c);
-            border-radius: 10px;
-            border: 2px solid rgba(30, 41, 59, 0.8);
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(180deg, #0f766e, #ea580c);
         }
 
         /* Energetic animations */
@@ -521,12 +508,11 @@
             }
             
             .tabs {
-                flex-direction: column;
+                display: none;
             }
-
-            .tab {
-                font-size: 0.9rem;
-                padding: 1rem;
+            
+            .mobile-tab-selector {
+                display: block;
             }
 
             .tab-content {
@@ -555,15 +541,15 @@
 
     <div class="container">
         <div class="controls">
-            <button class="btn btn-secondary" onclick="exportData()">Export Data</button>
-            <button class="btn btn-secondary" onclick="importData()">Import Data</button>
-            <button class="btn btn-primary" onclick="openModal('addHorseModal')">+ Add Horse</button>
+            <button class="btn btn-secondary" onclick="exportData()" aria-label="Export horse health data">Export Data</button>
+            <button class="btn btn-secondary" onclick="importData()" aria-label="Import horse health data">Import Data</button>
+            <button class="btn btn-primary" onclick="openModal('addHorseModal')" aria-label="Add new horse">+ Add Horse</button>
             <input type="file" id="importFile" style="display: none;" accept=".json">
         </div>
 
         <div class="horse-selector">
             <label for="horseSelect">Select Horse:</label>
-            <select id="horseSelect" onchange="switchHorse()">
+            <select id="horseSelect" onchange="switchHorse()" aria-label="Select a horse">
                 <option value="">-- Select a horse --</option>
             </select>
         </div>
@@ -575,8 +561,15 @@
 
         <div id="horseContent" style="display: none;">
             <div class="tabs">
+                <button class="tab active" data-tab="overview" onclick="switchTab('overview')" aria-label="View health overview">Overview</button>
+                <button class="tab" data-tab="vaccinations" onclick="switchTab('vaccinations')" aria-label="View vaccination records">Vaccinations</button>
+                <button class="tab" data-tab="deworming" onclick="switchTab('deworming')" aria-label="View deworming records">Deworming</button>
+                <button class="tab" data-tab="farrier" onclick="switchTab('farrier')" aria-label="View farrier records">Farrier</button>
+                <button class="tab" data-tab="veterinary" onclick="switchTab('veterinary')" aria-label="View veterinary records">Veterinary</button>
+            </div>
+            <div class="mobile-tab-selector">
                 <label for="tabSelect">Select Tab:</label>
-                <select id="tabSelect" onchange="switchTab(this.value)">
+                <select id="tabSelect" onchange="switchTab(this.value)" aria-label="Select health record tab">
                     <option value="overview">Overview</option>
                     <option value="vaccinations">Vaccinations</option>
                     <option value="deworming">Deworming</option>
@@ -584,41 +577,36 @@
                     <option value="veterinary">Veterinary</option>
                 </select>
             </div>
-
             <div class="tab-content">
                 <div id="overview" class="tab-pane active">
                     <h3>Health Overview</h3>
                     <div id="overviewContent"></div>
                 </div>
-
                 <div id="vaccinations" class="tab-pane">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
                         <h3>Vaccination Records</h3>
-                        <button class="btn btn-primary" onclick="openModal('addVaccinationModal')">+ Add</button>
+                        <button class="btn btn-primary" onclick="openModal('addVaccinationModal')" aria-label="Add new vaccination record">+ Add</button>
                     </div>
                     <div id="vaccinationRecords"></div>
                 </div>
-
                 <div id="deworming" class="tab-pane">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
                         <h3>Deworming Records</h3>
-                        <button class="btn btn-primary" onclick="openModal('addDewormingModal')">+ Add</button>
+                        <button class="btn btn-primary" onclick="openModal('addDewormingModal')" aria-label="Add new deworming record">+ Add</button>
                     </div>
                     <div id="dewormingRecords"></div>
                 </div>
-
                 <div id="farrier" class="tab-pane">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
                         <h3>Farrier Records</h3>
-                        <button class="btn btn-primary" onclick="openModal('addFarrierModal')">+ Add</button>
+                        <button class="btn btn-primary" onclick="openModal('addFarrierModal')" aria-label="Add new farrier record">+ Add</button>
                     </div>
                     <div id="farrierRecords"></div>
                 </div>
-
                 <div id="veterinary" class="tab-pane">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
                         <h3>Veterinary Records</h3>
-                        <button class="btn btn-primary" onclick="openModal('addVeterinaryModal')">+ Add</button>
+                        <button class="btn btn-primary" onclick="openModal('addVeterinaryModal')" aria-label="Add new veterinary record">+ Add</button>
                     </div>
                     <div id="veterinaryRecords"></div>
                 </div>
@@ -630,8 +618,8 @@
     <div id="addHorseModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Add New Horse</h2>
-                <span class="close" onclick="closeModal('addHorseModal')">×</span>
+                <h3>Add New Horse</h3>
+                <span class="close" onclick="closeModal('addHorseModal')" aria-label="Close modal">×</span>
             </div>
             <form id="addHorseForm">
                 <div class="form-group">
@@ -652,7 +640,7 @@
                     <label for="horseColor">Colour:</label>
                     <input type="text" id="horseColor">
                 </div>
-                <button type="submit" class="btn btn-primary">Add Horse</button>
+                <button type="submit" class="btn btn-primary" aria-label="Submit new horse">Add Horse</button>
             </form>
         </div>
     </div>
@@ -661,8 +649,8 @@
     <div id="addVaccinationModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Add Vaccination</h2>
-                <span class="close" onclick="closeModal('addVaccinationModal')">×</span>
+                <h3>Add Vaccination</h3>
+                <span class="close" onclick="closeModal('addVaccinationModal')" aria-label="Close modal">×</span>
             </div>
             <form id="addVaccinationForm">
                 <div class="form-group">
@@ -702,7 +690,7 @@
                     <label for="vaccineNotes">Notes:</label>
                     <textarea id="vaccineNotes" rows="2"></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary">Add Vaccination</button>
+                <button type="submit" class="btn btn-primary" aria-label="Submit new vaccination">Add Vaccination</button>
             </form>
         </div>
     </div>
@@ -711,8 +699,8 @@
     <div id="addDewormingModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Add Deworming</h2>
-                <span class="close" onclick="closeModal('addDewormingModal')">×</span>
+                <h3>Add Deworming</h3>
+                <span class="close" onclick="closeModal('addDewormingModal')" aria-label="Close modal">×</span>
             </div>
             <form id="addDewormingForm">
                 <div class="form-group">
@@ -749,7 +737,7 @@
                     <label for="dewormingNotes">Notes:</label>
                     <textarea id="dewormingNotes" rows="2"></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary">Add Deworming</button>
+                <button type="submit" class="btn btn-primary" aria-label="Submit new deworming record">Add Deworming</button>
             </form>
         </div>
     </div>
@@ -758,8 +746,8 @@
     <div id="addFarrierModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Add Farrier Visit</h2>
-                <span class="close" onclick="closeModal('addFarrierModal')">×</span>
+                <h3>Add Farrier Visit</h3>
+                <span class="close" onclick="closeModal('addFarrierModal')" aria-label="Close modal">×</span>
             </div>
             <form id="addFarrierForm">
                 <div class="form-group">
@@ -801,7 +789,7 @@
                     <label for="farrierNotes">Notes:</label>
                     <textarea id="farrierNotes" rows="2"></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary">Add Farrier Visit</button>
+                <button type="submit" class="btn btn-primary" aria-label="Submit new farrier visit">Add Farrier Visit</button>
             </form>
         </div>
     </div>
@@ -810,8 +798,8 @@
     <div id="addVeterinaryModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Add Veterinary Visit</h2>
-                <span class="close" onclick="closeModal('addVeterinaryModal')">×</span>
+                <h3>Add Veterinary Visit</h3>
+                <span class="close" onclick="closeModal('addVeterinaryModal')" aria-label="Close modal">×</span>
             </div>
             <form id="addVeterinaryForm">
                 <div class="form-group">
@@ -861,7 +849,7 @@
                     <label for="vetNotes">Notes:</label>
                     <textarea id="vetNotes" rows="2"></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary">Add Veterinary Visit</button>
+                <button type="submit" class="btn btn-primary" aria-label="Submit new veterinary visit">Add Veterinary Visit</button>
             </form>
         </div>
     </div>
@@ -873,17 +861,14 @@
 
         // Initialize the app
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM loaded, initializing app...');
             loadHorses();
             updateReminders();
             
-            // Set up form handlers
             const addHorseForm = document.getElementById('addHorseForm');
             if (addHorseForm) {
                 addHorseForm.addEventListener('submit', addHorse);
-                console.log('Add Horse form listener attached');
             } else {
-                console.error('addHorseForm not found');
+                alert('Error: Add Horse form not found');
             }
             
             document.getElementById('addVaccinationForm').addEventListener('submit', addVaccination);
@@ -891,18 +876,15 @@
             document.getElementById('addFarrierForm').addEventListener('submit', addFarrier);
             document.getElementById('addVeterinaryForm').addEventListener('submit', addVeterinary);
             
-            // Set up "Other" option handlers
             document.getElementById('vaccineType').addEventListener('change', toggleOtherInput);
             document.getElementById('dewormingProduct').addEventListener('change', toggleOtherInput);
             document.getElementById('farrierService').addEventListener('change', toggleOtherInput);
             document.getElementById('vetVisitType').addEventListener('change', toggleOtherInput);
             
-            // Set up import file handler
             document.getElementById('importFile').addEventListener('change', handleImport);
         });
 
         function loadHorses() {
-            console.log('Loading horses:', horses);
             const horseSelect = document.getElementById('horseSelect');
             horseSelect.innerHTML = '<option value="">-- Select a horse --</option>';
             
@@ -916,7 +898,6 @@
 
         function addHorse(e) {
             e.preventDefault();
-            console.log('addHorse function called');
             
             const name = document.getElementById('horseName').value;
             if (!name) {
@@ -937,7 +918,6 @@
             };
             
             horses.push(horse);
-            console.log('New horse added:', horse);
             saveData();
             loadHorses();
             closeModal('addHorseModal');
@@ -958,7 +938,7 @@
             selectedHorse = horses[horseIndex];
             document.getElementById('horseContent').style.display = 'block';
             document.getElementById('tabSelect').value = 'overview';
-            loadHorseData();
+            switchTab('overview');
         }
 
         function loadHorseData() {
@@ -977,7 +957,7 @@
             
             let html = `
                 <div class="record-item">
-                    <h4>${selectedHorse.name}</h4>
+                    <h3>${selectedHorse.name}</h3>
                     <p><strong>Breed:</strong> ${selectedHorse.breed || 'Not specified'}</p>
                     <p><strong>Age:</strong> ${selectedHorse.age || 'Not specified'}</p>
                     <p><strong>Colour:</strong> ${selectedHorse.color || 'Not specified'}</p>
@@ -996,7 +976,7 @@
             allRecords.sort((a, b) => new Date(b.date) - new Date(a.date));
             
             if (allRecords.length > 0) {
-                html += '<h4>Recent Activity</h4>';
+                html += '<h3>Recent Activity</h3>';
                 allRecords.slice(0, 5).forEach(record => {
                     html += `
                         <div class="record-item">
@@ -1027,26 +1007,28 @@
             }
             
             const sortedRecords = records.sort((a, b) => new Date(b.date) - new Date(a.date));
+            const fragment = document.createDocumentFragment();
             
-            let html = '';
             sortedRecords.forEach((record, index) => {
-                html += `
-                    <div class="record-item">
-                        <div class="record-header">
-                            <span class="record-type">${getRecordTitle(record, type)}</span>
-                            <div>
-                                <span class="record-date">${formatDate(record.date)}</span>
-                                <button class="btn btn-danger" onclick="deleteRecord('${type}', ${index})" style="margin-left: 0.5rem; padding: 0.2rem 0.4rem; font-size: 0.7rem;">Delete</button>
-                            </div>
-                        </div>
-                        <div class="record-details">
-                            ${getRecordDetails(record, type)}
+                const recordDiv = document.createElement('div');
+                recordDiv.className = 'record-item';
+                recordDiv.innerHTML = `
+                    <div class="record-header">
+                        <span class="record-type">${getRecordTitle(record, type)}</span>
+                        <div>
+                            <span class="record-date">${formatDate(record.date)}</span>
+                            <button class="btn btn-danger" onclick="deleteRecord('${type}', ${index})" style="margin-left: 0.5rem; padding: 0.2rem 0.4rem; font-size: 0.7rem;" aria-label="Delete this record">Delete</button>
                         </div>
                     </div>
+                    <div class="record-details">
+                        ${getRecordDetails(record, type)}
+                    </div>
                 `;
+                fragment.appendChild(recordDiv);
             });
             
-            container.innerHTML = html;
+            container.innerHTML = '';
+            container.appendChild(fragment);
         }
 
         function getRecordTitle(record, type) {
@@ -1104,13 +1086,13 @@
         function getRecordSummary(record) {
             switch(record.type) {
                 case 'vaccinations':
-                    return `${record.type} vaccination`;
+                    return `${record.type || 'Vaccination'} vaccination`;
                 case 'deworming':
-                    return `${record.product} deworming`;
+                    return `${record.product || 'Deworming'} deworming`;
                 case 'farrier':
-                    return `${record.service} - ${record.farrier || 'Farrier visit'}`;
+                    return `${record.service || 'Farrier visit'} - ${record.farrier || 'Farrier'}`;
                 case 'veterinary':
-                    return `${record.visitType} - ${record.veterinarian || 'Vet visit'}`;
+                    return `${record.visitType || 'Veterinary visit'} - ${record.veterinarian || 'Vet visit'}`;
                 default:
                     return 'Health record';
             }
@@ -1342,18 +1324,25 @@
                 pane.classList.remove('active');
             });
             
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
             const selectedPane = document.getElementById(tabName);
             if (selectedPane) {
                 selectedPane.classList.add('active');
             }
             
-            // Update dropdown to reflect current tab
+            const selectedTab = document.querySelector(`.tab[data-tab="${tabName}"]`);
+            if (selectedTab) {
+                selectedTab.classList.add('active');
+            }
+            
             const tabSelect = document.getElementById('tabSelect');
             if (tabSelect) {
                 tabSelect.value = tabName;
             }
             
-            // Load overview data if switching to overview tab
             if (tabName === 'overview') {
                 loadOverview();
             }
@@ -1363,9 +1352,8 @@
             const modal = document.getElementById(modalId);
             if (modal) {
                 modal.style.display = 'block';
-                console.log(`Modal ${modalId} opened`);
             } else {
-                console.error(`Modal ${modalId} not found`);
+                alert(`Error: Modal ${modalId} not found`);
             }
         }
 
@@ -1373,9 +1361,8 @@
             const modal = document.getElementById(modalId);
             if (modal) {
                 modal.style.display = 'none';
-                console.log(`Modal ${modalId} closed`);
             } else {
-                console.error(`Modal ${modalId} not found`);
+                alert(`Error: Modal ${modalId} not found`);
             }
         }
 
@@ -1397,9 +1384,8 @@
         function saveData() {
             try {
                 localStorage.setItem('horses', JSON.stringify(horses));
-                console.log('Data saved to localStorage');
             } catch (e) {
-                console.error('Error saving to localStorage:', e);
+                alert('Error saving data to localStorage: ' + e.message);
             }
         }
 
@@ -1412,12 +1398,10 @@
             link.download = 'horse_health_data.json';
             link.click();
             URL.revokeObjectURL(url);
-            console.log('Data exported');
         }
 
         function importData() {
             document.getElementById('importFile').click();
-            console.log('Import file dialog opened');
         }
 
         function handleImport(event) {
@@ -1434,14 +1418,11 @@
                         loadHorses();
                         updateReminders();
                         alert('Data imported successfully!');
-                        console.log('Data imported:', horses);
                     } else {
                         alert('Invalid file format. Please select a valid JSON file.');
-                        console.error('Invalid JSON format');
                     }
                 } catch (error) {
                     alert('Error reading file. Please make sure it\'s a valid JSON file.');
-                    console.error('Error reading file:', error);
                 }
             };
             reader.readAsText(file);
@@ -1460,13 +1441,11 @@
             return str.charAt(0).toUpperCase() + str.slice(1);
         }
 
-        // Close modals when clicking outside
         window.onclick = function(event) {
             const modals = document.querySelectorAll('.modal');
             modals.forEach(modal => {
                 if (event.target === modal) {
                     modal.style.display = 'none';
-                    console.log(`Modal ${modal.id} closed via outside click`);
                 }
             });
         };
