@@ -13,14 +13,14 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #FFF8F0;
-            color: #2C3E50;
+            background-color: #FFFFFF;
+            color: #2F2F2F;
             line-height: 1.4;
             min-height: 100vh;
         }
 
         .header {
-            background: linear-gradient(135deg, #FF6B6B, #FF9500);
+            background: linear-gradient(135deg, #6C5CE7, #A29BFE);
             color: #FFFFFF;
             padding: 0.4rem 0;
             text-align: center;
@@ -52,7 +52,7 @@
             align-items: center;
             position: sticky;
             top: 0;
-            background: #FFF8F0;
+            background: #FFFFFF;
             z-index: 10;
             padding: 0 0.25rem;
         }
@@ -66,37 +66,41 @@
             transition: all 0.2s ease;
             text-decoration: none;
             display: inline-block;
+            font-weight: 600;
         }
 
         .btn-primary {
-            background: #FF6B6B;
+            background: #6C5CE7;
             color: #FFFFFF;
         }
 
         .btn-primary:hover {
-            background: #FF8A8A;
+            background: #5A4FCF;
             transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.4);
         }
 
         .btn-secondary {
-            background: #4ECDC4;
+            background: #A29BFE;
             color: #FFFFFF;
-            border: 1px solid #4ECDC4;
+            border: 1px solid #A29BFE;
             font-size: 0.7rem;
             padding: 0.4rem 0.8rem;
         }
 
         .btn-secondary:hover {
-            background: #5DD6CE;
+            background: #9085E8;
+            box-shadow: 0 4px 12px rgba(162, 155, 254, 0.4);
         }
 
         .btn-danger {
-            background: #E74C3C;
+            background: #FD79A8;
             color: #FFFFFF;
         }
 
         .btn-danger:hover {
-            background: #C0392B;
+            background: #FC6C9B;
+            box-shadow: 0 4px 12px rgba(253, 121, 168, 0.4);
         }
 
         .horse-selector {
@@ -110,17 +114,23 @@
         .horse-selector label {
             font-size: 0.9rem;
             font-weight: bold;
-            color: #2C3E50;
+            color: #2F2F2F;
         }
 
         .horse-selector select {
             padding: 0.4rem;
-            border: 1px solid #FFE66D;
+            border: 2px solid #DDD6FE;
             border-radius: 4px;
             font-size: 0.9rem;
             width: auto;
             flex-grow: 1;
             background: #FFFFFF;
+            transition: border-color 0.2s ease;
+        }
+
+        .horse-selector select:focus {
+            outline: none;
+            border-color: #6C5CE7;
         }
 
         .tabs {
@@ -134,22 +144,28 @@
         .tabs label {
             font-size: 0.9rem;
             font-weight: bold;
-            color: #2C3E50;
+            color: #2F2F2F;
         }
 
         .tabs select {
             padding: 0.4rem;
-            border: 1px solid #FFE66D;
+            border: 2px solid #DDD6FE;
             border-radius: 4px;
             font-size: 0.9rem;
             width: auto;
             flex-grow: 1;
             cursor: pointer;
             background: #FFFFFF;
+            transition: border-color 0.2s ease;
+        }
+
+        .tabs select:focus {
+            outline: none;
+            border-color: #6C5CE7;
         }
 
         .tab-content {
-            background: #FFFFFF;
+            background: #FAFAFA;
             padding: 0.25rem;
             border-radius: 0 0 6px 6px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
@@ -175,7 +191,7 @@
             display: block;
             margin-bottom: 0.3rem;
             font-weight: 500;
-            color: #2C3E50;
+            color: #2F2F2F;
             font-size: 0.9rem;
         }
 
@@ -184,7 +200,7 @@
         .form-group textarea {
             width: 100%;
             padding: 0.4rem;
-            border: 1px solid #FFE66D;
+            border: 2px solid #DDD6FE;
             border-radius: 4px;
             font-size: 0.9rem;
             transition: border-color 0.2s ease;
@@ -195,7 +211,7 @@
         .form-group select:focus,
         .form-group textarea:focus {
             outline: none;
-            border-color: #FF6B6B;
+            border-color: #6C5CE7;
         }
 
         .form-row {
@@ -213,7 +229,8 @@
             padding: 0.4rem;
             border-radius: 6px;
             margin-bottom: 0.5rem;
-            border-left: 3px solid #FF6B6B;
+            border-left: 4px solid #6C5CE7;
+            box-shadow: 0 2px 8px rgba(108, 92, 231, 0.1);
         }
 
         .record-header {
@@ -225,7 +242,7 @@
 
         .record-type {
             font-weight: bold;
-            color: #FF6B6B;
+            color: #6C5CE7;
             font-size: 0.9rem;
         }
 
@@ -235,14 +252,14 @@
         }
 
         .record-details {
-            color: #2C3E50;
+            color: #2F2F2F;
             margin-top: 0.25rem;
             font-size: 0.8rem;
         }
 
         .upcoming-reminders {
-            background: #FFF8F0;
-            border: 1px solid #FFE66D;
+            background: linear-gradient(135deg, #F8F7FF, #F0EFFF);
+            border: 2px solid #DDD6FE;
             padding: 0 0.25rem 0.5rem;
             border-radius: 6px;
             margin: 0 0.25rem 0.75rem;
@@ -253,7 +270,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 0.5rem 0;
-            border-bottom: 1px solid #FFE66D;
+            border-bottom: 1px solid #DDD6FE;
             font-size: 0.8rem;
         }
 
@@ -262,8 +279,8 @@
         }
 
         .overdue {
-            background: #FFE5E5;
-            border-color: #FF6B6B;
+            background: linear-gradient(135deg, #FFF0F5, #FFE5F0);
+            border-color: #FD79A8;
         }
 
         .modal {
@@ -300,10 +317,11 @@
             font-size: 1.2rem;
             cursor: pointer;
             color: #666;
+            transition: color 0.2s ease;
         }
 
         .close:hover {
-            color: #2C3E50;
+            color: #6C5CE7;
         }
 
         .empty-state {
