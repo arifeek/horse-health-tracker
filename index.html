@@ -1318,7 +1318,6 @@
             
             remindersList.innerHTML = html;
         }
-
         function switchTab(tabName) {
             document.querySelectorAll('.tab-pane').forEach(pane => {
                 pane.classList.remove('active');
@@ -1343,9 +1342,8 @@
                 tabSelect.value = tabName;
             }
             
-            if (tabName === 'overview') {
-                loadOverview();
-            }
+            // Load data for all tabs to ensure records are displayed
+            loadHorseData();
         }
 
         function openModal(modalId) {
